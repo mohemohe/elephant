@@ -75,7 +75,10 @@ export class Request extends React.Component<IProps, IState> {
             <>
                 {this.props.GoogleStore!.items.map((item) =>
                     <div>
-                        <img src={item.volumeInfo.imageLinks.thumbnail}/>
+                        {item.volumeInfo && item.volumeInfo.imageLinks ?
+                            <img src={item.volumeInfo.imageLinks.thumbnail}/> :
+                            undefined
+                        }
                         {item.id}
                         {item.volumeInfo.title}
                     </div>
