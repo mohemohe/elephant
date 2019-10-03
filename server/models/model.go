@@ -10,15 +10,13 @@ import (
 )
 
 var collections = struct {
-	PubSub  string
-	Entries string
-	Users   string
-	KVS     string
+	PubSub string
+	Books  string
+	Users  string
 }{
-	PubSub:  "pubsub",
-	Entries: "entries",
-	Users:   "users",
-	KVS:     "kvs",
+	PubSub: "pubsub",
+	Books:  "books",
+	Users:  "users",
 }
 
 type (

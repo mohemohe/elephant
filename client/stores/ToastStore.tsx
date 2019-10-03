@@ -1,7 +1,7 @@
 import {action, observable} from "mobx";
 import StoreBase from "./StoreBase";
 
-export default class ToastStore extends StoreBase {
+export class ToastStore extends StoreBase {
     @observable
     public message?: string;
 
