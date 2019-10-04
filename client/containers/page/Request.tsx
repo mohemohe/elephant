@@ -4,7 +4,8 @@ import {RequestStore} from "../../stores/RequestStore";
 import {GoogleStore} from "../../stores/GoogleStore";
 import {TitleBar} from "../../components/TitleBar";
 import {style} from "typestyle";
-import {Card, CardContent, CardMedia, TextField, Typography} from "@material-ui/core";
+import {Card, CardContent, CardMedia, IconButton, TextField, Typography} from "@material-ui/core";
+import GradeIcon from "@material-ui/icons/Grade";
 import debounce from "awesome-debounce-promise";
 
 interface IProps extends React.ClassAttributes<{}> {
@@ -22,8 +23,7 @@ const styles = {
         height: "100%",
     }),
     notFound: style({
-        width: "100%",
-        minHeight: "100%",
+        flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -137,6 +137,9 @@ export class Request extends React.Component<IProps, IState> {
                                 }
                             </Typography>
                         </CardContent>
+                        <IconButton>
+                            <GradeIcon/>
+                        </IconButton>
                     </Card>
                 )}
             </div>
