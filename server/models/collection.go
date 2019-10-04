@@ -14,10 +14,6 @@ type (
 	Collecton struct {
 		bongo.DocumentBase `bson:",inline"`
 		BookID             bson.ObjectId `bson:"book_id" json:"book_id"`
-		Title              string        `bson:"title" json:"title"`
-		Authors            []string      `bson:"authors" json:"authors"`
-		Description        string        `bson:"description" json:"description"`
-		ThumbnailURL       string        `bson:"thumbnail_url" json:"thumbnail_url"`
 	}
 
 	GoogleBookAPIResult struct {
@@ -148,6 +144,10 @@ func PutCollection(GoogleID string) error {
 		ThumbnailURL: item.VolumeInfo.ImageLinks.Thumbnail,
 	}
 	if err := connection.Mongo().Collection(collections.Books).Save(book); err != nil {
-
+		return err
 	}
+	collection := &Collecton{
+		BookID:       book.Id,
+	}
+	return connection.Mongo().Collection(collections.Collection).Save(collection)
 }
