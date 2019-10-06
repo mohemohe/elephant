@@ -2,25 +2,33 @@ import * as React from "react";
 import {inject, observer} from "mobx-react";
 import {RequestStore} from "../../stores/RequestStore";
 import {GoogleStore} from "../../stores/GoogleStore";
+import {CollectionStore} from "../../stores/CollectionStore";
 import {TitleBar} from "../../components/TitleBar";
 import {style} from "typestyle";
-import {Card, CardContent, CardMedia, IconButton, TextField, Typography} from "@material-ui/core";
+import {Card, CardContent, CardMedia, IconButton, Menu, MenuItem, TextField, Typography} from "@material-ui/core";
 import GradeIcon from "@material-ui/icons/Grade";
+import MoreIcon from "@material-ui/icons/MoreHoriz";
 import debounce from "awesome-debounce-promise";
 
 interface IProps extends React.ClassAttributes<{}> {
+    CollectionStore?: CollectionStore;
     RequestStore?: RequestStore;
     GoogleStore?: GoogleStore;
 }
 
 interface IState extends React.ComponentState {
+    anchorEl: HTMLButtonElement | null;
+    open: boolean;
+    selected: string;
 }
 
 const styles = {
     root: style({
+        flex: 1,
         display: "flex",
         flexDirection: "column",
         height: "100%",
+        margin: "-1rem",
     }),
     notFound: style({
         flex: 1,
@@ -34,16 +42,20 @@ const styles = {
             }
         }
     }),
+    searchBar: style({
+        margin: "1rem",
+        width: "calc(100% - 2rem)",
+    }),
     list: style({
         flex: 1,
-        overflow: "scroll",
+        overflowX: "hidden",
+        overflowY: "scroll",
         display: "flex",
         flexWrap: "wrap",
     }),
     card: style({
-        width: "calc(25% - 1rem)",
-        marginRight: "1rem",
-        marginBottom: "1rem",
+        width: "calc(25% - 2rem)",
+        margin: "1rem",
         minWidth: 220,
         position: "relative",
     }),
@@ -62,14 +74,24 @@ const styles = {
     cardImageBg: style({
         height: 240,
         filter: "blur(12px) saturate(0.3)",
-    })
+    }),
+    icons: style({
+        display: "flex",
+        justifyContent: "flex-end",
+    }),
 };
 
-@inject("RequestStore", "GoogleStore")
+@inject("CollectionStore", "RequestStore", "GoogleStore")
 @observer
 export class Request extends React.Component<IProps, IState> {
     constructor(props: IProps, state: IState) {
         super(props, state);
+
+        this.state = {
+            anchorEl: null,
+            open: false,
+            selected: "",
+        };
 
         this.index = 1;
     }
@@ -77,7 +99,11 @@ export class Request extends React.Component<IProps, IState> {
     private index: number;
 
     public componentDidMount() {
-        // this.props.CollectionStore!.getEntries(this.index);
+        this.props.CollectionStore!.getCollections(this.index);
+    }
+
+    public componentWillUnmount() {
+        this.props.GoogleStore!.reset();
     }
 
     public get back() {
@@ -130,6 +156,20 @@ export class Request extends React.Component<IProps, IState> {
                             <Typography gutterBottom variant="h5" component="h2">
                                 {item.volumeInfo.title}
                             </Typography>
+                            <div className={styles.icons}>
+                                <IconButton disabled>
+                                    <GradeIcon/>
+                                </IconButton>
+                                <IconButton onClick={(event) => {
+                                    this.setState({
+                                        open: true,
+                                        anchorEl: event.currentTarget,
+                                        selected: item.id,
+                                    });
+                                }}>
+                                    <MoreIcon/>
+                                </IconButton>
+                            </div>
                             <Typography variant="body2" color="textSecondary" component="p">
                                 {item.volumeInfo.description && item.volumeInfo.description.length > 80 ?
                                     item.volumeInfo.description.substring(0, 80) + "..." :
@@ -137,11 +177,25 @@ export class Request extends React.Component<IProps, IState> {
                                 }
                             </Typography>
                         </CardContent>
-                        <IconButton>
-                            <GradeIcon/>
-                        </IconButton>
                     </Card>
                 )}
+                <Menu
+                    id="simple-menu"
+                    anchorEl={this.state.anchorEl}
+                    open={this.state.open}
+                    onClose={() => {
+                        this.setState({
+                            open: false,
+                        });
+                    }}
+                >
+                    <MenuItem onClick={() => {
+                        this.props.CollectionStore!.postCollections(this.state.selected);
+                        this.setState({
+                            open: false,
+                        });
+                    }}>コレクションに入れる</MenuItem>
+                </Menu>
             </div>
         );
     }
@@ -151,6 +205,7 @@ export class Request extends React.Component<IProps, IState> {
             <div className={styles.root}>
                 <TitleBar>リクエスト</TitleBar>
                 <TextField
+                    className={styles.searchBar}
                     label={"検索"}
                     fullWidth
                     onChange={async (event) => {

@@ -10,21 +10,20 @@ import (
 )
 
 type (
-	Collection struct {
+	Request struct {
 		bongo.DocumentBase `bson:",inline"`
 		GoogleID           string `bson:"google_id" json:"google_id"`
 	}
-
-	Collections struct {
-		Info        *bongo.PaginationInfo `bson:"-" json:"info"`
-		Collections []Collection          `bson:"-" json:"collections"`
+	Requests struct {
+		Info     *bongo.PaginationInfo `bson:"-" json:"info"`
+		Requests []Request             `bson:"-" json:"requests"`
 	}
 )
 
-func FindCollection(perPage int, page int, ids []string) *Collections {
-	cacheKey := "collections:" + strconv.Itoa(perPage) + ":" + strconv.Itoa(page) + ":" + util.HashIdsFromString(strings.Join(ids, ","))
+func FindRequest(perPage int, page int, ids []string) *Requests {
+	cacheKey := "requests:" + strconv.Itoa(perPage) + ":" + strconv.Itoa(page) + ":" + util.HashIdsFromString(strings.Join(ids, ","))
 
-	c := new(Collections)
+	c := new(Requests)
 	if err := GetCache(cacheKey, c); err == nil {
 		return c
 	}
@@ -38,7 +37,7 @@ func FindCollection(perPage int, page int, ids []string) *Collections {
 		}
 		q["$or"] = or
 	}
-	find := conn.Collection(collections.Collections).Find(q)
+	find := conn.Collection(collections.Requests).Find(q)
 	if find == nil {
 		return nil
 	}
@@ -47,20 +46,20 @@ func FindCollection(perPage int, page int, ids []string) *Collections {
 	if err != nil {
 		return nil
 	}
-	collectionSlice := make([]Collection, info.RecordsOnPage)
+	collectionSlice := make([]Request, info.RecordsOnPage)
 	for i := 0; i < info.RecordsOnPage; i++ {
 		_ = find.Next(&collectionSlice[i])
 	}
 
-	cs := &Collections{
-		Info:        info,
-		Collections: collectionSlice,
+	cs := &Requests{
+		Info:     info,
+		Requests: collectionSlice,
 	}
 	_ = SetCache(cacheKey, collections)
 	return cs
 }
 
-func CreateCollection(googleID string) error {
+func CreateRequest(googleID string) error {
 	book := FindBookByGoogleID(googleID)
 	if book == nil {
 		if b, err := CreateBook(googleID); err != nil {

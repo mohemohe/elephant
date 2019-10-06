@@ -1,15 +1,13 @@
 import {action, observable} from "mobx";
 import StoreBase, {IModel, IPagitane, Mode, State} from "./StoreBase";
 
-export interface ICollection extends IModel {
-    title: string;
-    tags: string[];
-    body: string;
+export interface IRequest extends IModel {
+    google_id: string;
 }
 
 export class RequestStore extends StoreBase {
     @observable
-    public requests: ICollection[];
+    public requests: IRequest[];
 
     @observable
     public info: IPagitane;
@@ -22,12 +20,12 @@ export class RequestStore extends StoreBase {
     }
 
     @action
-    public async getCollections(page: number) {
+    public async getRequests(page: number, q: string = "") {
         this.setMode(Mode.GET);
         this.setState(State.RUNNING);
 
         try {
-            const url = `${this.apiBasePath}v1/requests?limit=10&page=${page}`;
+            const url = `${this.apiBasePath}v1/requests?limit=10&page=${page}&q=${q}`;
             const response = await fetch(url, {
                 method: "GET",
                 headers: this.generateFetchHeader(),
@@ -46,5 +44,10 @@ export class RequestStore extends StoreBase {
             console.error(e);
             this.setState(State.ERROR);
         }
+    }
+
+    @action
+    public reset() {
+        this.requests = [];
     }
 }

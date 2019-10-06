@@ -13,13 +13,12 @@ interface IState extends React.ComponentState {
 
 const styles = {
     root: style({
-        // flex: 1,
-        // display: "flex",
-        // flexDirection: "column",
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
     }),
     notFound: style({
-        width: "100%",
-        minHeight: "100%",
+        flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -44,7 +43,7 @@ export class Collection extends React.Component<IProps, IState> {
     private index: number;
 
     public componentDidMount() {
-        // this.props.CollectionStore!.getEntries(this.index);
+        this.props.CollectionStore!.getCollections(this.index);
     }
 
     public get back() {

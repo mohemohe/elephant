@@ -146,4 +146,10 @@ export class GoogleStore extends StoreBase {
             this.setState(State.ERROR);
         }
     }
+
+    @action
+    public reset() {
+        this.items = [];
+        this.setState(State.IDLE);
+    }
 }

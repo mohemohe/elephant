@@ -10,15 +10,17 @@ import (
 )
 
 var collections = struct {
-	PubSub string
-	Books  string
-	Collection string
-	Users  string
+	PubSub      string
+	Books       string
+	Collections string
+	Requests    string
+	Users       string
 }{
-	PubSub: "pubsub",
-	Books:  "books",
-	Collection: "collections",
-	Users:  "users",
+	PubSub:      "pubsub",
+	Books:       "books",
+	Collections: "collects",
+	Requests:    "requests",
+	Users:       "users",
 }
 
 type (
@@ -28,24 +30,24 @@ type (
 		Template string `json:"template"`
 	}
 	ServerSideRendering struct {
-		Entries  bool `json:"entries"`
-		Entry    bool `json:"entry"`
+		Entries bool `json:"entries"`
+		Entry   bool `json:"entry"`
 	}
 )
 
 const (
-	KVCacheSize = "cache_size" // TODO:
+	KVCacheSize               = "cache_size" // TODO:
 	KVEnableMongoDBQueryCache = "mongo_db_query_cache"
-	KVEnableSSRPageCache = "ssr_page_cache"
-	KVSiteTitle = "site_title"
-	KVNotifyMastodon = "notify_mastodon"
-	KVServerSideRendering = "server_side_rendering"
+	KVEnableSSRPageCache      = "ssr_page_cache"
+	KVSiteTitle               = "site_title"
+	KVNotifyMastodon          = "notify_mastodon"
+	KVServerSideRendering     = "server_side_rendering"
 )
 
 var pubsub *mgo_pubsub.PubSub
 
 func InitDB() {
-	// ensureIndex(collections.KVS, getIndex([]string{"key"}, true, false))
+	ensureIndex(collections.Books, getIndex([]string{"google_id"}, true, false))
 
 	if p, err := mgo_pubsub.NewPubSub(configs.GetEnv().Mongo.Address, configs.GetEnv().Mongo.Database, "pubsub"); err != nil {
 		util.Logger().WithField("error", err).Fatalln("pubsub connection error")

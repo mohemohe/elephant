@@ -1,7 +1,6 @@
 import * as React from "react";
-import Home from "@material-ui/icons/Home";
-import Subject from "@material-ui/icons/Subject";
-import InsertDriveFile from "@material-ui/icons/InsertDriveFile";
+import CollectionsBookmark from "@material-ui/icons/CollectionsBookmark";
+import HowToVote from "@material-ui/icons/HowToVote";
 import { Index } from "../containers/page/Index";
 import { LoginPage } from "../containers/page/auth/Login";
 import { LogoutPage } from "../containers/page/auth/Logout";
@@ -24,7 +23,6 @@ export const ROUTES: IRouteInfo[] = [
     {
         name: "",
         path: "/",
-        icon: <Home/>,
         component: Index,
         showLeftNav: false,
         permission: [],
@@ -46,7 +44,7 @@ export const ROUTES: IRouteInfo[] = [
     {
         name: "コレクション",
         path: "/collections",
-        icon: <Subject/>,
+        icon: <CollectionsBookmark/>,
         component: Collection,
         showLeftNav: true,
         permission: [],
@@ -55,7 +53,7 @@ export const ROUTES: IRouteInfo[] = [
     {
         name: "リクエスト",
         path: "/requests",
-        icon: <InsertDriveFile/>,
+        icon: <HowToVote/>,
         component: Request,
         showLeftNav: true,
         permission: [],

@@ -43,5 +43,6 @@ func AuthCheck(c echo.Context) error {
 }
 
 func AuthLogout(c echo.Context) error {
+	// TODO:
 	return c.NoContent(http.StatusOK)
 }

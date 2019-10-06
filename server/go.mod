@@ -16,5 +16,6 @@ require (
 	github.com/mohemohe/parakeet/server v0.0.0-20190901055952-ba4674a1cec7
 	github.com/playree/goingtpl v0.0.0-20180728103816-063435765262
 	github.com/sirupsen/logrus v1.4.2
+	github.com/speps/go-hashids v2.0.0+incompatible
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 )
