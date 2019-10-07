@@ -109,7 +109,7 @@ export class LoginPage extends React.Component<IProps, IState> {
                 <form className={styles.loginCardWrapper} onSubmit={(e) => this.onSubmit(e)}>
                     <Card className={styles.loginCard}>
                         <Typography variant="overline">
-                            parakeet ログイン
+                            elephant ログイン
                         </Typography>
                         <CardContent className={styles.loginInputs}>
                             <TextField

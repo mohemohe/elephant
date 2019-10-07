@@ -109,7 +109,7 @@ export class AuthStore extends StoreBase {
 
     @computed
     public get role() {
-        return this.isRoot ? "管理者" : "編集者";
+        return this.isRoot ? "管理者" : "ユーザー";
     }
 
     @computed

@@ -16,7 +16,7 @@ type (
 			Secret string `default:""`
 		}
 		Mongo struct {
-			Address  string `default:"mongodb://localhost:27017"`
+			Address  string `default:"mongodb://127.0.0.1:27017"`
 			Database string `default:"elephant"`
 			SSL      bool   `default:"false"`
 		}

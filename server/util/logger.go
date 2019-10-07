@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/mohemohe/parakeet/server/configs"
+	"github.com/mohemohe/elephant/server/configs"
 	"github.com/sirupsen/logrus"
 )
 

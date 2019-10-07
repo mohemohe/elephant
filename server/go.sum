@@ -47,6 +47,7 @@ github.com/mobilusoss/mgo-pubsub v0.0.0-20190823080606-0dd0f1cb10a2 h1:MFlFbOA0/
 github.com/mobilusoss/mgo-pubsub v0.0.0-20190823080606-0dd0f1cb10a2/go.mod h1:6aD7D74HEQT6gf7Vbj4na+ebX+yJDAitOBfBivrmB0Q=
 github.com/mohemohe/echoHelper/v4 v4.1.0 h1:wgykkqlCAhXpMJGV4W3c+SzfddnTHI2F7ftFeRX6N5Y=
 github.com/mohemohe/echoHelper/v4 v4.1.0/go.mod h1:ZUVFs6HIkTrkfkOhrpDDEXCuhEne1sUjizsdLq2Fs5A=
+github.com/mohemohe/elephant v0.0.0-20191006170747-654c4234cfac h1:Mj7sf18cC1cvX7SC5uO6vo4T9Tgw9kLdOK20yjNV2N8=
 github.com/mohemohe/parakeet v0.0.0-20190901055952-ba4674a1cec7 h1:KyISxoIBKKOQyrFd7Z3wyq2J2QKM8XuZdGDQQauop44=
 github.com/mohemohe/parakeet/server v0.0.0-20190901055952-ba4674a1cec7 h1:k3ThuN0/qWMZbInOZFHLklgDMt75jhP76EAEVmxcecI=
 github.com/mohemohe/parakeet/server v0.0.0-20190901055952-ba4674a1cec7/go.mod h1:xkvPPAC1z5y9zncEfAnhN99zz12LOowNsu5qsaEdgUw=

@@ -5,13 +5,10 @@ import (
 	"errors"
 	"github.com/globalsign/mgo/bson"
 	"github.com/go-bongo/bongo"
+	"github.com/mohemohe/elephant/server/models/connections"
 	"github.com/mohemohe/elephant/server/types"
-	"github.com/mohemohe/elephant/server/util"
-	"github.com/mohemohe/parakeet/server/models/connection"
 	"io/ioutil"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 type (
@@ -29,24 +26,18 @@ type (
 	}
 )
 
-func FindBookByGoogleIDs(perPage int, page int, ids []string) *Books {
-	cacheKey := "collections:" + strconv.Itoa(perPage) + ":" + strconv.Itoa(page) + ":" + util.HashIdsFromString(strings.Join(ids, ","))
-
-	c := new(Books)
-	if err := GetCache(cacheKey, c); err == nil {
-		return c
-	}
-
-	conn := connection.Mongo()
+func FindBook(perPage int, page int, qs []string) *Books {
+	conn := connections.Mongo()
 	q := bson.M{}
-	if ids != nil && len(ids) != 0 {
-		or := make([]bson.M, len(ids))
-		for i, v := range ids {
-			or[i] = bson.M{"book_id": v}
+	if qs != nil && len(qs) != 0 {
+		or := make([]bson.M, 0)
+		for _, v := range qs {
+			p := `^.*` + v + `.*$`
+			or = append(or, bson.M{"google_id": v}, bson.M{"title": bson.RegEx{Pattern: p, Options:"m"}}, bson.M{"description": bson.RegEx{Pattern: p, Options:"m"}}, bson.M{"authors": bson.RegEx{Pattern: p, Options:"m"}})
 		}
 		q["$or"] = or
 	}
-	find := conn.Collection(collections.Collections).Find(q)
+	find := conn.Collection(collections.Books).Find(q)
 	if find == nil {
 		return nil
 	}
@@ -64,12 +55,11 @@ func FindBookByGoogleIDs(perPage int, page int, ids []string) *Books {
 		Info:  info,
 		Books: bookSlice,
 	}
-	_ = SetCache(cacheKey, collections)
 	return cs
 }
 
 func FindBookByGoogleID(googleID string) *Book {
-	conn := connection.Mongo()
+	conn := connections.Mongo()
 
 	book := &Book{}
 	err := conn.Collection(collections.Books).FindOne(bson.M{"google_id": googleID}, book)
@@ -105,7 +95,7 @@ func CreateBook(googleID string) (*Book, error) {
 		Description:  item.VolumeInfo.Description,
 		ThumbnailURL: item.VolumeInfo.ImageLinks.Thumbnail,
 	}
-	if err := connection.Mongo().Collection(collections.Books).Save(book); err != nil {
+	if err := connections.Mongo().Collection(collections.Books).Save(book); err != nil {
 		return nil, err
 	}
 	return book, nil

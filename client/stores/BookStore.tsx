@@ -1,13 +1,17 @@
 import {action, observable} from "mobx";
 import StoreBase, {IModel, IPagitane, Mode, State} from "./StoreBase";
 
-export interface ICollection extends IModel {
+export interface IBooks extends IModel {
     google_id: string;
+    title: string;
+    author: string[];
+    description: string;
+    thumbnail_url: string;
 }
 
-export class CollectionStore extends StoreBase {
+export class BookStore extends StoreBase {
     @observable
-    public collections: ICollection[];
+    public books: IBooks[];
 
     @observable
     public info: IPagitane;
@@ -15,12 +19,12 @@ export class CollectionStore extends StoreBase {
     constructor() {
         super();
 
-        this.collections = [];
+        this.books = [];
         this.info = {} as IPagitane;
     }
 
     @action
-    public async getCollections(page: number, ids: string = "", search: boolean = false) {
+    public async getBooks(page: number, ids: string = "", search: boolean = false) {
         if (search) {
             this.setMode(Mode.SEARCH);
         } else {
@@ -29,7 +33,7 @@ export class CollectionStore extends StoreBase {
         this.setState(State.RUNNING);
 
         try {
-            const url = `${this.apiBasePath}v1/collections?limit=10&page=${page}&q=${ids}`;
+            const url = `${this.apiBasePath}v1/books?limit=10&page=${page}&q=${ids}`;
             const response = await fetch(url, {
                 method: "GET",
                 headers: this.generateFetchHeader(),
@@ -39,7 +43,7 @@ export class CollectionStore extends StoreBase {
                 throw new Error();
             }
             const result = await response.json();
-            this.collections = result.collections;
+            this.books = result.books;
             this.info = result.info;
 
             this.setState(State.DONE);
@@ -69,7 +73,6 @@ export class CollectionStore extends StoreBase {
                 throw new Error();
             }
 
-            this.tryShowToast("コレクションに追加しました");
             this.setState(State.DONE);
         } catch (e) {
             this.tryShowToast("コレクションの追加に失敗しました");
@@ -80,6 +83,6 @@ export class CollectionStore extends StoreBase {
 
     @action
     public reset() {
-        this.collections = [];
+        this.books = [];
     }
 }

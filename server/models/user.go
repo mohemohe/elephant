@@ -4,9 +4,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/globalsign/mgo/bson"
 	"github.com/go-bongo/bongo"
-	"github.com/mohemohe/parakeet/server/configs"
-	"github.com/mohemohe/parakeet/server/models/connection"
-	"github.com/mohemohe/parakeet/server/util"
+	"github.com/mohemohe/elephant/server/configs"
+	"github.com/mohemohe/elephant/server/models/connections"
+	"github.com/mohemohe/elephant/server/util"
 	"time"
 )
 
@@ -42,7 +42,7 @@ const (
 )
 
 func GetUserById(id string) *User {
-	conn := connection.Mongo()
+	conn := connections.Mongo()
 
 	user := &User{}
 	err := conn.Collection(collections.Users).FindById(bson.ObjectIdHex(id), user)
@@ -54,7 +54,7 @@ func GetUserById(id string) *User {
 }
 
 func GetUserByEmail(email string) *User {
-	conn := connection.Mongo()
+	conn := connections.Mongo()
 
 	user := &User{}
 	err := conn.Collection(collections.Users).FindOne(bson.M{
@@ -68,7 +68,7 @@ func GetUserByEmail(email string) *User {
 }
 
 func GetUsers(perPage int, page int) *Users {
-	conn := connection.Mongo()
+	conn := connections.Mongo()
 
 	result := conn.Collection(collections.Users).Find(bson.M{})
 	if result == nil {
@@ -93,11 +93,11 @@ func UpsertUser(user *User) error {
 	if !util.IsBcrypt(user.Password) {
 		user.Password = *util.Bcrypt(user.Password)
 	}
-	return connection.Mongo().Collection(collections.Users).Save(user)
+	return connections.Mongo().Collection(collections.Users).Save(user)
 }
 
 func DeleteUser(user *User) error {
-	return connection.Mongo().Collection(collections.Users).DeleteDocument(user)
+	return connections.Mongo().Collection(collections.Users).DeleteDocument(user)
 }
 
 func AuthroizeUser(email string, password string) (*User, *string) {

@@ -17,7 +17,10 @@ type (
 func GetCollections(c echo.Context) error {
 	limit := util.ToInt(c.QueryParam("limit"))
 	page := util.ToInt(c.QueryParam("page"))
-	q := strings.Split(c.QueryParam("q"), ",")
+	var q []string = nil
+	if c.QueryParam("q") != "" {
+		q = strings.Split(c.QueryParam("q"), ",")
+	}
 	result := models.FindCollection(limit, page, q)
 	return c.JSON(http.StatusOK, result)
 }

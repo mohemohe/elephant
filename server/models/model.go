@@ -18,7 +18,7 @@ var collections = struct {
 }{
 	PubSub:      "pubsub",
 	Books:       "books",
-	Collections: "collects",
+	Collections: "collections",
 	Requests:    "requests",
 	Users:       "users",
 }
@@ -47,7 +47,8 @@ const (
 var pubsub *mgo_pubsub.PubSub
 
 func InitDB() {
-	ensureIndex(collections.Books, getIndex([]string{"google_id"}, true, false))
+	ensureIndex(collections.Collections, getIndex([]string{"google_id"}, true, false))
+	// ensureIndex(collections.Books, getIndex([]string{"google_id"}, true, false))
 
 	if p, err := mgo_pubsub.NewPubSub(configs.GetEnv().Mongo.Address, configs.GetEnv().Mongo.Database, "pubsub"); err != nil {
 		util.Logger().WithField("error", err).Fatalln("pubsub connection error")
@@ -59,8 +60,6 @@ func InitDB() {
 		util.Logger().WithField("error", err).Fatalln("pubsub initialize error")
 	}
 	go pubsub.StartPubSub()
-
-	go subscribePurgeCacheEvent()
 
 	util.Logger().Info("DB initialized")
 }

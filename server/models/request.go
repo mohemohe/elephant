@@ -3,10 +3,7 @@ package models
 import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/go-bongo/bongo"
-	"github.com/mohemohe/elephant/server/util"
-	"github.com/mohemohe/parakeet/server/models/connection"
-	"strconv"
-	"strings"
+	"github.com/mohemohe/elephant/server/models/connections"
 )
 
 type (
@@ -21,14 +18,7 @@ type (
 )
 
 func FindRequest(perPage int, page int, ids []string) *Requests {
-	cacheKey := "requests:" + strconv.Itoa(perPage) + ":" + strconv.Itoa(page) + ":" + util.HashIdsFromString(strings.Join(ids, ","))
-
-	c := new(Requests)
-	if err := GetCache(cacheKey, c); err == nil {
-		return c
-	}
-
-	conn := connection.Mongo()
+	conn := connections.Mongo()
 	q := bson.M{}
 	if ids != nil && len(ids) != 0 {
 		or := make([]bson.M, len(ids))
@@ -55,7 +45,6 @@ func FindRequest(perPage int, page int, ids []string) *Requests {
 		Info:     info,
 		Requests: collectionSlice,
 	}
-	_ = SetCache(cacheKey, collections)
 	return cs
 }
 
@@ -71,9 +60,6 @@ func CreateRequest(googleID string) error {
 	collection := &Collection{
 		GoogleID: book.GoogleID,
 	}
-	err := connection.Mongo().Collection(collections.Collections).Save(collection)
-	if err == nil {
-		PurgeCache()
-	}
+	err := connections.Mongo().Collection(collections.Collections).Save(collection)
 	return err
 }

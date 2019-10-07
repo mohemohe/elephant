@@ -99,11 +99,11 @@ export class Request extends React.Component<IProps, IState> {
     private index: number;
 
     public componentDidMount() {
-        this.props.CollectionStore!.getCollections(this.index);
+        this.props.RequestStore!.getRequests(this.index);
     }
 
     public componentWillUnmount() {
-        this.props.GoogleStore!.reset();
+        this.props.RequestStore!.reset();
     }
 
     public get back() {
